@@ -3697,7 +3697,8 @@ namespace Novacode
 
                 // The parent of this Run
                 XElement parentElement = run.Xml.Parent;
-                switch (parentElement.Name.LocalName)
+				string parentLocalName = parentElement.Name.LocalName;
+                switch (parentLocalName)
                 {
                     case "ins":
                         {
@@ -3765,9 +3766,9 @@ namespace Novacode
 				bool removeEmpty = removeEmptyParagraph && GetElementTextLength( parentElement ) == 0;
 				if( parentElement.Parent != null )
 				{
-					// Need to make sure there is another paragraph in parent cell
-					removeEmpty &= parentElement.Parent.Name.LocalName == "tc" &&
-						parentElement.Parent.Elements( XName.Get( "p", DocX.w.NamespaceName ) ).Count() > 1;
+					// If parent is table make sure there is another paragraph in parent's cell
+					if( parentLocalName == "tc" )
+						removeEmpty &= parentElement.Parent.Elements( XName.Get( "p", DocX.w.NamespaceName ) ).Count() > 1;
 
 					// Need to make sure there is no drawing element within the parent element.
 					// Picture elements contain no text length but they are still content.
